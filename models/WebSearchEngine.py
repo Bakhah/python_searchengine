@@ -1,4 +1,5 @@
-from pydash import intersection, union, sorted_uniq
+from pydash import intersection, union
+import pickle
 
 
 class WebSearchEngine():
@@ -18,6 +19,7 @@ class WebSearchEngine():
                 self.search_dict[word] = []
             self.search_dict[word].append(webpage.url)
         self.indexed_urls.append(webpage.url)
+        pickle.dump(self, open("save.p", "wb"))
 
     def single_search(self, query):
         return self.search_dict.get(query)
