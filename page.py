@@ -17,8 +17,8 @@ def print_list(list):
         print(bcolors.FAIL, "\n\n\tAucun résultat...")
     else:
         print(bcolors.OKGREEN, "\n", len(list), " résultats : \n")
-        for item in list:
-            print("\t", item)
+        for i, item in enumerate(list):
+            print("\t", i + 1, ") ", item)
     print("\n", bcolors.ENDC)
 
 
@@ -67,7 +67,6 @@ else:
     search_engine = WebSearchEngine()
     index_all()
 
-
 while True:
     query = input("Rechercher : ")
     is_conjunctive = False
@@ -84,4 +83,5 @@ while True:
         results = search_engine.single_search(splitted_words[0])
 
     print_list(results)
+    pickle.dump(search_engine, open("save.p", "wb"))
 

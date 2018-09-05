@@ -1,4 +1,4 @@
-from pydash import intersection, union
+from pydash import intersection, union, get
 import pickle
 
 
@@ -16,26 +16,28 @@ class WebSearchEngine():
         for word in webpage.desc_words:
             key_value = self.search_dict.get(word)
             if not key_value:
-                self.search_dict[word] = []
-            self.search_dict[word].append(webpage.url)
+                self.search_dict[word] = {'count': 0, 'urls': []}
+            self.search_dict[word]['urls'].append(webpage.url)
         self.indexed_urls.append(webpage.url)
         pickle.dump(self, open("save.p", "wb"))
 
     def single_search(self, query):
-        return self.search_dict.get(query)
+        self.count += 1
+        return get(self.search_dict, query + ".urls")
 
     def multiple_search(self, word_list, is_conjunctive):
+        self.count += 1
         first_search = True
         urls = []
         for word in word_list:
             if is_conjunctive:
                 if first_search:
-                    urls = union(urls, self.search_dict.get(word))
+                    urls = union(urls, get(self.search_dict, word + ".urls"))
                     first_search = False
                 else:
-                    urls = intersection(urls, self.search_dict.get(word))
+                    urls = intersection(urls, get(self.search_dict, word + ".urls"))
             else:
-                urls = union(urls, self.search_dict.get(word))
+                urls = union(urls, get(self.search_dict, word + ".urls"))
         return urls
 
     def all_urls(self):
