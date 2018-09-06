@@ -1,4 +1,4 @@
-from pydash import intersection, union, get
+from pydash import intersection, union, get, pull
 import pickle
 
 
@@ -39,6 +39,13 @@ class WebSearchEngine():
             else:
                 urls = union(urls, get(self.search_dict, word + ".urls"))
         return urls
+
+    # def deindex(self, url):
+    #     # if url in self.indexed_urls:
+    #     #     # pull(self.indexed_urls, url)
+    #     # else:
+    #     #     print("Cet url n'est pas indexé\n")
+
 
     def all_urls(self):
         return self.indexed_urls

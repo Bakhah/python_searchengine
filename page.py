@@ -55,7 +55,6 @@ def index_all():
             index_url(line, num_lines)
     percent = 0.0
 
-
 previous_state = os.path.exists("save.p")
 webpages = []
 num_lines = sum(1 for line in open('urllist.txt'))
@@ -68,20 +67,37 @@ else:
     index_all()
 
 while True:
-    query = input("Rechercher : ")
-    is_conjunctive = False
-    splitted_words = query.split()
-    results = []
+    mode = input("1) Indexer un nouvel url\n2) Désindexer un url existant\n3) Effectuer une recherche\n4) Voir tous les urls indexés\n\nChoix : ")
 
-    if len(splitted_words) > 1:
-        answer = input("Recherche conjonctive ? O/N : ")
-        if answer == "O":
-            is_conjunctive = True
-        results = search_engine.multiple_search(splitted_words, is_conjunctive)
+    if mode == "1":
+        url_to_index = input("Saisissez un url à indexer : ")
+        index_url(url_to_index, 1)
 
-    else:
-        results = search_engine.single_search(splitted_words[0])
+    if mode == "2":
+        url_to_deindex = input("Saisissez un url à désindexer : ")
+        search_engine.deindex(url_to_deindex)
 
-    print_list(results)
+    if mode == "3":
+        query = input("Rechercher : ")
+        is_conjunctive = False
+        splitted_words = query.split()
+        results = []
+
+        if len(splitted_words) > 1:
+            answer = input("Recherche conjonctive ? O/N : ")
+            if answer == "O":
+                is_conj = True
+            results = search_engine.multiple_search(splitted_words, is_conj)
+
+        else:
+            results = search_engine.single_search(splitted_words[0])
+
+        print_list(results)
+
+    if mode == '4':
+        for url in search_engine.all_urls():
+            print(url)
+        print('\n')
+
     pickle.dump(search_engine, open("save.p", "wb"))
 
