@@ -1,4 +1,4 @@
-from pydash import intersection, union, get, pull
+from pydash import intersection, union, get, for_in
 import pickle
 
 
@@ -13,11 +13,15 @@ class WebSearchEngine():
         return str(self.__dict__)
 
     def index(self, webpage):
-        for word in webpage.desc_words:
-            key_value = self.search_dict.get(word)
-            if not key_value:
-                self.search_dict[word] = {'count': 0, 'urls': []}
-            self.search_dict[word]['urls'].append(webpage.url)
+
+        def parse_desc(count, word):
+            if get(self.search_dict, word):
+                self.search_dict[word].append({webpage.url: count})
+            else:
+                self.search_dict[word] = []
+                self.search_dict[word].append({webpage.url: count})
+
+        for_in(webpage.desc_words, parse_desc)
         self.indexed_urls.append(webpage.url)
         pickle.dump(self, open("save.p", "wb"))
 

@@ -6,11 +6,17 @@ from models.WebPage import WebPage
 from models.WebSearchEngine import WebSearchEngine
 from models.bcolors import bcolors
 from web import download
+from string import punctuation
 import pickle
 import os.path
 
-percent = 0.0
 
+def no_punc(s):
+    return ''.join(c for c in s if c not in punctuation)
+
+
+percent = 0.0
+url_list_path = "small_urllist.txt"
 
 def print_list(list):
     if not list:
@@ -25,7 +31,7 @@ def print_list(list):
 def look_for_something_to_index(search_engine):
     global percent
     urls_to_index = []
-    with open("urllist.txt", "r") as f:
+    with open(url_list_path, "r") as f:
         for line in f:
             if line.rstrip('\r\n') not in search_engine.indexed_urls:
                 urls_to_index.append(line)
@@ -50,14 +56,14 @@ def index_url(line, num_lines):
 
 def index_all():
     global percent
-    with open("urllist.txt", "r") as f:
+    with open(url_list_path, "r") as f:
         for line in f:
             index_url(line, num_lines)
     percent = 0.0
 
 previous_state = os.path.exists("save.p")
 webpages = []
-num_lines = sum(1 for line in open('urllist.txt'))
+num_lines = sum(1 for line in open(url_list_path))
 
 if previous_state:
     search_engine = pickle.load(open("save.p", "rb"))
