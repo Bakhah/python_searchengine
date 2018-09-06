@@ -16,7 +16,7 @@ def no_punc(s):
 
 
 percent = 0.0
-url_list_path = "small_urllist.txt"
+url_list_path = "urllist.txt"
 
 def print_list(list):
     if not list:
@@ -72,6 +72,8 @@ else:
     search_engine = WebSearchEngine()
     index_all()
 
+print(search_engine.search_dict)
+
 while True:
     mode = input("1) Indexer un nouvel url\n2) Désindexer un url existant\n3) Effectuer une recherche\n4) Voir tous les urls indexés\n\nChoix : ")
 
@@ -85,7 +87,7 @@ while True:
 
     if mode == "3":
         query = input("Rechercher : ")
-        is_conjunctive = False
+        is_conj = False
         splitted_words = query.split()
         results = []
 
@@ -93,12 +95,10 @@ while True:
             answer = input("Recherche conjonctive ? O/N : ")
             if answer == "O":
                 is_conj = True
-            results = search_engine.multiple_search(splitted_words, is_conj)
+            search_engine.multiple_search(splitted_words, is_conj)
 
         else:
-            results = search_engine.single_search(splitted_words[0])
-
-        print_list(results)
+            search_engine.single_search(splitted_words[0])
 
     if mode == '4':
         for url in search_engine.all_urls():

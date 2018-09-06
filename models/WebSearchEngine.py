@@ -1,5 +1,6 @@
-from pydash import intersection, union, get, for_in
+from pydash import intersection_with, union_with, get, for_in, order_by
 import pickle
+from models.bcolors import bcolors
 
 
 class WebSearchEngine():
@@ -15,11 +16,12 @@ class WebSearchEngine():
     def index(self, webpage):
 
         def parse_desc(count, word):
-            if get(self.search_dict, word):
-                self.search_dict[word].append({webpage.url: count})
-            else:
+            if not get(self.search_dict, word):
                 self.search_dict[word] = []
-                self.search_dict[word].append({webpage.url: count})
+            self.search_dict[word].append({
+                'url': webpage.url,
+                'count': count
+            })
 
         for_in(webpage.desc_words, parse_desc)
         self.indexed_urls.append(webpage.url)
@@ -27,22 +29,25 @@ class WebSearchEngine():
 
     def single_search(self, query):
         self.count += 1
-        return get(self.search_dict, query + ".urls")
+        search = order_by(get(self.search_dict, query), ['count'], True)
+        self.print_list(search, True)
 
     def multiple_search(self, word_list, is_conjunctive):
+        comparator = lambda a, b: a['url'] == b['url']
+
         self.count += 1
         first_search = True
         urls = []
         for word in word_list:
             if is_conjunctive:
                 if first_search:
-                    urls = union(urls, get(self.search_dict, word + ".urls"))
+                    urls = union_with(urls, get(self.search_dict, word), comparator)
                     first_search = False
                 else:
-                    urls = intersection(urls, get(self.search_dict, word + ".urls"))
+                    urls = intersection_with(urls, get(self.search_dict, word), comparator)
             else:
-                urls = union(urls, get(self.search_dict, word + ".urls"))
-        return urls
+                urls = union_with(urls, get(self.search_dict, word), comparator)
+        self.print_list(urls)
 
     # def deindex(self, url):
     #     # if url in self.indexed_urls:
@@ -50,7 +55,15 @@ class WebSearchEngine():
     #     # else:
     #     #     print("Cet url n'est pas indexé\n")
 
-
     def all_urls(self):
         return self.indexed_urls
+
+    def print_list(self, list, with_occurence):
+        if not list:
+            print(bcolors.FAIL, "\n\n\tAucun résultat...")
+        else:
+            print(bcolors.OKGREEN, "\n", len(list), " résultats : \n")
+            for i, item in enumerate(list):
+                print("\t", i + 1, ") ", item['url'], " (",item['count'],' fois)')
+        print("\n", bcolors.ENDC)
 
