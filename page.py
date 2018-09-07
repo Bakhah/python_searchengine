@@ -72,8 +72,6 @@ else:
     search_engine = WebSearchEngine()
     index_all()
 
-print(search_engine.search_dict)
-
 while True:
     mode = input("1) Indexer un nouvel url\n2) Désindexer un url existant\n3) Effectuer une recherche\n4) Voir tous les urls indexés\n\nChoix : ")
 

@@ -47,7 +47,7 @@ class WebSearchEngine():
                     urls = intersection_with(urls, get(self.search_dict, word), comparator)
             else:
                 urls = union_with(urls, get(self.search_dict, word), comparator)
-        self.print_list(urls)
+        self.print_list(urls, False)
 
     # def deindex(self, url):
     #     # if url in self.indexed_urls:
