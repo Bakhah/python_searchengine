@@ -53,7 +53,6 @@ def index_url(line, num_lines):
         sys.stdout.flush()
         sys.stdout.write("    Indexation terminée\n\n")
 
-
 def index_all():
     global percent
     with open(url_list_path, "r") as f:
@@ -78,6 +77,7 @@ while True:
     if mode == "1":
         url_to_index = input("Saisissez un url à indexer : ")
         index_url(url_to_index, 1)
+        percent = 0
 
     if mode == "2":
         url_to_deindex = input("Saisissez un url à désindexer : ")

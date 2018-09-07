@@ -27,7 +27,6 @@ def parseDescription(description):
             res[word] += 1
         else:
             res[word] = 1
-    print(res)
     return res
 
 

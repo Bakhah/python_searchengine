@@ -1,4 +1,4 @@
-from pydash import intersection_with, union_with, get, for_in, order_by
+from pydash import intersection_with, union_with, get, for_in, order_by, pull, pull_all_with
 import pickle
 from models.bcolors import bcolors
 
@@ -49,11 +49,16 @@ class WebSearchEngine():
                 urls = union_with(urls, get(self.search_dict, word), comparator)
         self.print_list(urls, False)
 
-    # def deindex(self, url):
-    #     # if url in self.indexed_urls:
-    #     #     # pull(self.indexed_urls, url)
-    #     # else:
-    #     #     print("Cet url n'est pas indexé\n")
+    def deindex(self, url):
+        comparator = lambda a, b: a['url'] == b
+
+        if url in self.indexed_urls:
+            pull(self.indexed_urls, url)
+            for word in self.search_dict:
+                pull_all_with(self.search_dict[word], [url], comparator)
+            print("Désindexation terminée\n")
+        else:
+            print("Cet url n'est pas indexé\n")
 
     def all_urls(self):
         return self.indexed_urls
