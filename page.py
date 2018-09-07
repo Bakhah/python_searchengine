@@ -2,9 +2,9 @@
 
 import sys
 from urllib.parse import urlparse
-from models.WebPage import WebPage
-from models.WebSearchEngine import WebSearchEngine
-from models.bcolors import bcolors
+from src.WebPage import WebPage
+from src.WebSearchEngine import WebSearchEngine
+from src.bcolors import bcolors
 from web import download
 from string import punctuation
 import pickle
@@ -16,7 +16,7 @@ def no_punc(s):
 
 
 percent = 0.0
-url_list_path = "urllist.txt"
+url_list_path = "data/urllist.txt"
 
 def print_list(list):
     if not list:
@@ -60,12 +60,12 @@ def index_all():
             index_url(line, num_lines)
     percent = 0.0
 
-previous_state = os.path.exists("save.p")
+previous_state = os.path.exists("data/save.p")
 webpages = []
 num_lines = sum(1 for line in open(url_list_path))
 
 if previous_state:
-    search_engine = pickle.load(open("save.p", "rb"))
+    search_engine = pickle.load(open("data/save.p", "rb"))
     look_for_something_to_index(search_engine)
 else:
     search_engine = WebSearchEngine()
@@ -103,5 +103,5 @@ while True:
             print(url)
         print('\n')
 
-    pickle.dump(search_engine, open("save.p", "wb"))
+    pickle.dump(search_engine, open("data/save.p", "wb"))
 

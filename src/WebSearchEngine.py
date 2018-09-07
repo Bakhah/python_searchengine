@@ -1,6 +1,6 @@
 from pydash import intersection_with, union_with, get, for_in, order_by, pull, pull_all_with
 import pickle
-from models.bcolors import bcolors
+from src.bcolors import bcolors
 
 
 class WebSearchEngine():
@@ -29,7 +29,10 @@ class WebSearchEngine():
 
     def single_search(self, query):
         self.count += 1
-        search = order_by(get(self.search_dict, query), ['count'], True)
+        search = []
+        unordered_search = get(self.search_dict, query)
+        if unordered_search:
+            search = order_by(unordered_search, ['count'], True)
         self.print_list(search, True)
 
     def multiple_search(self, word_list, is_conjunctive):
@@ -38,15 +41,19 @@ class WebSearchEngine():
         self.count += 1
         first_search = True
         urls = []
+
         for word in word_list:
+            search = get(self.search_dict, word)
+            if not search:
+                search = []
             if is_conjunctive:
                 if first_search:
-                    urls = union_with(urls, get(self.search_dict, word), comparator)
+                    urls = union_with(urls, search, comparator)
                     first_search = False
                 else:
-                    urls = intersection_with(urls, get(self.search_dict, word), comparator)
+                    urls = intersection_with(urls, search, comparator)
             else:
-                urls = union_with(urls, get(self.search_dict, word), comparator)
+                urls = union_with(urls, search, comparator)
         self.print_list(urls, False)
 
     def deindex(self, url):
