@@ -1,4 +1,4 @@
-# Dépendances
+# Installation
 
 ```
 pip install pydash
